@@ -1,4 +1,4 @@
-# Controle de Abastecimentos Salles Transportes
+# Controle de Abastecimentos e Passageiros
 
 Aplicativo web de página única para registrar abastecimentos e controlar passageiros por TAG da MIP. Funciona diretamente no navegador, sem servidor ou dependências, com navegação lateral entre as duas abas.
 
