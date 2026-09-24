@@ -4,7 +4,7 @@ Aplicativo web de página única para registrar abastecimentos e controlar passa
 
 ## Rodar no computador
 
-Abra `Controle de Abastecimentos Salles Transportes.html` no navegador.
+Abra `index.html` no navegador.
 
 ## Publicar no GitHub Pages
 
