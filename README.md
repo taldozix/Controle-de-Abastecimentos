@@ -1,6 +1,18 @@
 # Controle de Abastecimentos e Passageiros
 
-Aplicativo web de página única para registrar abastecimentos e controlar passageiros por TAG da MIP. Funciona diretamente no navegador, sem servidor ou dependências, com navegação lateral entre as duas abas.
+Aplicativo web de página única para registrar abastecimentos e controlar passageiros por TAG da MIP. Funciona diretamente no navegador, sem servidor, com quatro abas laterais: **Painel**, **Abastecimentos**, **Passageiros MIP** e **Importar e exportar**.
+
+## O que é automático
+
+- **Importação de planilhas do Excel** (`.xlsx`, `.xls`, `.ods`) e CSV: todas as abas do arquivo são analisadas; o sistema identifica sozinho se cada aba é de abastecimentos ou de passageiros e reconhece as colunas pelo nome, em qualquer ordem (ex.: “Placa”, “KM atual”, “Qtd Litros”, “Valor total”). Antes de gravar, mostra um resumo com registros válidos, duplicados e linhas com problema. Veículos e TAGs novos são cadastrados automaticamente; registros já existentes (mesmo veículo e hodômetro) são ignorados, então é seguro importar o mesmo arquivo de novo. Também é possível arrastar o arquivo para qualquer lugar da página. Use **Baixar modelo de planilha** para ver o formato.
+- **Exportação em PDF**: relatório completo com indicadores, alertas, resumo por veículo, resumo mensal, histórico de abastecimentos e as grades de passageiros de todos os meses (ou apenas o filtro atual). A aba de passageiros também exporta o mês em PDF.
+- **Exportação em Excel**: planilha com abas de abastecimentos, resumo por veículo, resumo mensal e uma aba por mês de passageiros. Ela pode ser importada de volta.
+- **Preenchimento automático do formulário**: ao escolher o veículo, motorista, tipo, combustível, contrato, local, posto, TAG e preço são sugeridos a partir do último abastecimento dele. Antes de salvar, aparecem o total em R$, o KM do período e o km/L; hodômetros incoerentes com as datas pedem confirmação.
+- **Painel com alertas**: indicadores filtráveis por veículo, período (atalhos “Este mês”, “Mês anterior”, “Últimos 90 dias”…) e busca; alertas de hodômetro menor que o anterior, consumo muito abaixo/acima do normal do veículo, preço fora do padrão, possível abastecimento faltando e falta de cópia de segurança.
+- **Grade de passageiros**: cole blocos de células copiados do Excel direto na grade (Ctrl+V), navegue com Enter e setas, veja total por TAG, total por dia e média por dia útil; adicione ou remova TAGs.
+- **Backup automático em arquivo** (Chrome/Edge para computador): escolha um arquivo JSON uma vez — de preferência numa pasta sincronizada (OneDrive, Google Drive) — e cada alteração é gravada nele automaticamente.
+
+As bibliotecas de leitura de Excel (SheetJS) e de geração de PDF (jsPDF + AutoTable) são baixadas da internet apenas no momento do uso. Sem internet, o restante do aplicativo funciona normalmente, a importação de CSV continua disponível e o PDF recorre à impressão do navegador (“Salvar como PDF”).
 
 ## Rodar no computador
 
@@ -17,13 +29,13 @@ Se aparecer 404, confirme que o nome é exatamente `index.html` (minúsculas), q
 
 ## Controle diário de passageiros MIP
 
-A aba lateral **Passageiros MIP** reproduz a tabela da planilha enviada: TAG, cidade, início do bairro, os dias do mês com dia da semana e data, e a linha **TOTAL DO DIA**. Inclui MIP - 160 até MIP - 167 e TREINAMENTO. Cidade e bairro são editáveis por veículo; o número de passageiros pode ser preenchido em cada dia. O total diário é calculado automaticamente. Selecione o mês para consultar ou preencher outro período e use **Exportar mês CSV** para abrir a grade no Excel.
+A aba lateral **Passageiros MIP** reproduz a tabela da planilha enviada: TAG, cidade, início do bairro, os dias do mês com dia da semana e data, e a linha **TOTAL DO DIA**. Inclui MIP - 160 até MIP - 167 e TREINAMENTO. Cidade e bairro são editáveis por veículo; o número de passageiros pode ser preenchido em cada dia. Os totais por dia e por TAG são calculados automaticamente. Selecione o mês (ou use as setas ‹ ›) para consultar ou preencher outro período e use **Exportar Excel**, **Exportar CSV** ou **Exportar PDF** para gerar a grade do mês. A importação aceita a mesma grade: colunas TAG, CIDADE e INICIO BAIRRO e uma coluna por dia com a data no cabeçalho (ou o número do dia, com o mês no título da planilha).
 
 Os passageiros são salvos automaticamente no armazenamento local do navegador, separados por mês. A cópia JSON, a cópia HTML e o backup/restauração também incluem esses registros. Como o armazenamento continua local, a publicação no GitHub Pages não sincroniza automaticamente os dados entre computadores ou celulares; transfira uma cópia JSON para levar os registros a outro dispositivo.
 
 ## Como é feita a conta
 
-No formulário de abastecimento, selecione o tipo de veículo (Ônibus, Microônibus, Van ou Carreta) e registre, se desejar, o nome do posto ao lado da localização. Tipo e posto também aparecem no histórico e na exportação CSV.
+No formulário de abastecimento, selecione o tipo de veículo (Ônibus, Microônibus, Van ou Carreta) e registre, se desejar, o nome do posto e a TAG. Tipo, posto e TAG também aparecem no histórico e nas exportações CSV, Excel e PDF.
 
 O histórico mostra o **KM anterior** do mesmo veículo, o **KM atual** e o **KM do período**:
 
@@ -41,7 +53,7 @@ Exemplo: tanque cheio aos 10.000 km; parcial de 20 L aos 10.200 km; tanque cheio
 
 ## Dados
 
-Os registros ficam no armazenamento local do navegador e não são enviados ao GitHub. Abrir o site em outro aparelho ou navegador não traz os dados automaticamente. Se o navegador bloquear o armazenamento local, o aplicativo avisará e os dados valerão apenas até fechar ou recarregar a página. Use **Baixar cópia JSON** e **Restaurar cópia JSON** para transferir ou recuperar abastecimentos e passageiros. No hodômetro, `12.500` representa doze mil e quinhentos km; `12500.5` ou `12500,5` representa doze mil e quinhentos vírgula cinco km. Litros e preço aceitam vírgula ou ponto decimal, sem separador de milhar. **Baixar HTML com dados** cria uma cópia independente do aplicativo, com os registros daquele momento embutidos no próprio arquivo. Para incorporar alterações posteriores, baixe outro HTML e substitua a cópia antiga. Se a página for reaberta no mesmo navegador, alterações mais recentes também podem vir do armazenamento local; em outro dispositivo, o HTML começa pela cópia embutida. **Exportar CSV** inclui tipo de veículo, motorista, localização, posto, combustível, contrato, KM anterior, KM do período e as duas formas de km/L; produz um arquivo para Excel, com ponto e vírgula como separador e vírgula decimal.
+Os registros ficam no armazenamento local do navegador e não são enviados ao GitHub. Abrir o site em outro aparelho ou navegador não traz os dados automaticamente. Se o navegador bloquear o armazenamento local, o aplicativo avisará e os dados valerão apenas até fechar ou recarregar a página. Use **Baixar cópia JSON** e **Restaurar cópia JSON** para transferir ou recuperar abastecimentos e passageiros. No hodômetro, `12.500` representa doze mil e quinhentos km; `12500.5` ou `12500,5` representa doze mil e quinhentos vírgula cinco km. Litros e preço aceitam vírgula ou ponto decimal, sem separador de milhar. **Baixar HTML com dados** cria uma cópia independente do aplicativo, com os registros daquele momento embutidos no próprio arquivo. Para incorporar alterações posteriores, baixe outro HTML e substitua a cópia antiga. Se a página for reaberta no mesmo navegador, alterações mais recentes também podem vir do armazenamento local; em outro dispositivo, o HTML começa pela cópia embutida. **Exportar CSV** inclui TAG, tipo de veículo, motorista, localização, posto, combustível, contrato, KM anterior, KM do período e as duas formas de km/L; produz um arquivo para Excel, com ponto e vírgula como separador e vírgula decimal.
 
 ## Versão desktop para Windows
 
